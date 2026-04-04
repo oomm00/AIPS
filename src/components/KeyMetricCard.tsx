@@ -32,19 +32,18 @@ export default function KeyMetricCard({
   mono = true,
 }: KeyMetricCardProps) {
   const palette = accentMap[accent];
-  const numericValue = mono ? <span className="data-value">{value}</span> : value;
 
   return (
     <Card className={`group overflow-hidden ${palette.ring}`}>
       <div className={"border-l-2 border-white/5"}>
         <MetricTile
           label={label}
-          value={numericValue}
+          value={value}
           unit={unit}
           helper={sub}
           icon={icon}
           indicatorClassName={`${palette.indicator} ${accent !== "zinc" ? "animate-pulse-slow" : ""}`}
-          valueClassName={palette.value}
+          valueClassName={`${palette.value}${mono ? " data-value" : ""}`}
         />
       </div>
     </Card>
