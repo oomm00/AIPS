@@ -4,9 +4,17 @@ import { LoaderCircle } from "lucide-react";
 
 export function LoadingState({ message = "Loading..." }: { message?: string }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[200px] gap-3 text-zinc-500">
-      <LoaderCircle size={24} className="animate-spin text-emerald-500/60" />
-      <p className="text-[12px] font-mono">{message}</p>
+    <div className="animate-fade-in space-y-5 py-6">
+      <div className="flex items-center gap-3 text-gray-300">
+        <LoaderCircle size={20} className="animate-spin text-emerald-400" />
+        <p className="text-sm font-medium tracking-wide">{message}</p>
+      </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="skeleton h-28" />
+        <div className="skeleton h-28" />
+        <div className="skeleton h-28" />
+        <div className="skeleton h-28" />
+      </div>
     </div>
   );
 }
@@ -21,18 +29,20 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[200px] gap-3 p-6 text-center">
-      <div className="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-        <span className="text-red-400 text-lg">!</span>
+    <div className="flex flex-col items-center justify-center min-h-[250px] gap-4 p-8 text-center bg-[#111827]/50 rounded-2xl border border-red-500/10 shadow-glow-red animate-fade-in">
+      <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center shadow-glow-red">
+        <span className="text-red-400 text-2xl font-bold">!</span>
       </div>
-      <p className="text-[13px] font-medium text-zinc-300">{message}</p>
-      {detail && <p className="text-[11px] text-zinc-600 max-w-md">{detail}</p>}
+      <div>
+        <p className="text-base font-semibold text-gray-200">{message}</p>
+        {detail && <p className="text-sm text-gray-500 mt-1 max-w-sm mx-auto">{detail}</p>}
+      </div>
       {onRetry && (
         <button
           onClick={onRetry}
-          className="btn-secondary text-[11px] mt-2"
+          className="btn-secondary mt-3 px-6 py-2 rounded-lg font-medium text-sm transition-transform active:scale-95"
         >
-          Retry
+          Try Again
         </button>
       )}
     </div>
@@ -51,11 +61,13 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[200px] gap-3 p-8 text-center text-zinc-600 border border-dashed border-zinc-800/50 rounded-lg">
-      {icon && <div className="opacity-30 mb-1">{icon}</div>}
-      <p className="text-[13px] font-medium text-zinc-400">{message}</p>
-      {sub && <p className="text-[11px] text-zinc-600">{sub}</p>}
-      {action && <div className="mt-2">{action}</div>}
+    <div className="flex flex-col items-center justify-center min-h-[250px] gap-4 p-10 text-center bg-[#111827]/30 border border-dashed border-[rgba(255,255,255,0.08)] rounded-2xl animate-fade-in">
+      {icon && <div className="text-gray-600 mb-2 transform scale-125">{icon}</div>}
+      <div>
+        <p className="text-base font-semibold text-gray-300">{message}</p>
+        {sub && <p className="text-sm text-gray-500 mt-1">{sub}</p>}
+      </div>
+      {action && <div className="mt-4">{action}</div>}
     </div>
   );
 }

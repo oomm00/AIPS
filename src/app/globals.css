@@ -1,8 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@config "../../tailwind.config.ts";
+@import "tailwindcss";
 
 @layer base {
   * {
@@ -16,8 +15,8 @@
   }
 
   body {
-    background: #09090b;
-    color: #fafafa;
+    background: #0B0F14;
+    color: #F3F4F6;
     font-family: "Inter", system-ui, sans-serif;
   }
 
@@ -36,50 +35,52 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(161, 161, 170, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(161, 161, 170, 0.25);
+    background: rgba(255, 255, 255, 0.2);
   }
 }
 
 @layer components {
   .glass-panel {
-    background: rgba(12, 12, 14, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(161, 161, 170, 0.08);
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
 
   .card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(161, 161, 170, 0.10);
-    border-radius: 6px;
-    transition: border-color 0.15s ease, background 0.15s ease;
+    background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    transition: all 0.2s ease;
   }
 
   .card:hover {
-    border-color: rgba(161, 161, 170, 0.18);
-    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   }
 
   .btn-primary {
-    background: rgba(16, 185, 129, 0.12);
-    color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.20);
-    border-radius: 6px;
-    font-weight: 500;
-    font-size: 0.8125rem;
-    padding: 0.5rem 1rem;
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.28) 0%, rgba(16, 185, 129, 0.16) 100%);
+    color: #d1fae5;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.625rem 1rem;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .btn-primary:hover {
-    background: rgba(16, 185, 129, 0.18);
-    border-color: rgba(16, 185, 129, 0.35);
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0.22) 100%);
+    border-color: rgba(16, 185, 129, 0.55);
+    box-shadow: 0 0 24px rgba(16, 185, 129, 0.2);
   }
 
   .btn-primary:active {
@@ -89,12 +90,12 @@
 
   .btn-secondary {
     background: rgba(255, 255, 255, 0.03);
-    color: #a1a1aa;
-    border: 1px solid rgba(161, 161, 170, 0.12);
-    border-radius: 6px;
+    color: #d1d5db;
+    border: 1px solid rgba(161, 161, 170, 0.2);
+    border-radius: 0.75rem;
     font-weight: 500;
-    font-size: 0.8125rem;
-    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    padding: 0.625rem 1rem;
     cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -102,7 +103,8 @@
   .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.05);
     color: #fafafa;
-    border-color: rgba(161, 161, 170, 0.20);
+    border-color: rgba(161, 161, 170, 0.35);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
   }
 
   .btn-secondary:active {
@@ -114,7 +116,7 @@
     background: rgba(245, 158, 11, 0.10);
     color: #f59e0b;
     border: 1px solid rgba(245, 158, 11, 0.20);
-    border-radius: 6px;
+    border-radius: 0.75rem;
     font-weight: 500;
     font-size: 0.8125rem;
     padding: 0.5rem 1rem;
@@ -192,5 +194,57 @@
     font-size: 0.75rem;
     line-height: 1.6;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .table-premium {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  .table-premium th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .table-premium td {
+    padding: 0.85rem 1rem;
+    color: #e5e7eb;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .table-premium tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.015);
+  }
+
+  .table-premium tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 0.75rem;
+  }
+
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    animation: shimmer 1.6s infinite;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
   }
 }

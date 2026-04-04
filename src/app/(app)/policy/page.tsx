@@ -65,7 +65,7 @@ export default function PolicyPage() {
     }
   };
 
-  if (loading) return <LoadingState message="Loading policy data..." />;
+  if (loading) return <LoadingState message="Reconstructing coverage profile..." />;
   if (error) return <ErrorState message="Failed to load policy" detail={error} onRetry={load} />;
 
   const zri = worker?.zones?.zri ?? 1.18;
@@ -75,18 +75,18 @@ export default function PolicyPage() {
   const coverageLimit = quote?.coverage_limit ?? policy?.coverage_limit ?? 0;
 
   return (
-    <div className="space-y-6 max-w-[1200px] mx-auto pb-10">
-      <div className="flex items-center justify-between pb-2 border-b border-zinc-800/50">
+    <div className="space-y-8 max-w-[1280px] mx-auto pb-12 animate-fade-in">
+      <div className="flex items-center justify-between pb-4 border-b border-[rgba(255,255,255,0.06)]">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-white">
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
             Coverage Profile
           </h1>
-          <p className="text-[12px] text-zinc-500 mt-1">
+          <p className="text-sm text-gray-400 font-medium">
             Parametric policy management · Weekly premium · Coverage limits
           </p>
         </div>
         {policy && (
-          <span className="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-mono">
+          <span className="px-3 py-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-widest shadow-glow-emerald font-mono">
             ACTIVE POLICY
           </span>
         )}
@@ -94,33 +94,35 @@ export default function PolicyPage() {
 
       {/* Worker Snapshot */}
       {worker && (
-        <SectionCard title="Worker Profile" noPadding>
-          <div className="p-5 flex flex-col md:flex-row gap-6 md:items-center justify-between">
-            <div className="flex items-center gap-5">
-              <div className="h-14 w-14 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-xl font-semibold text-zinc-300 font-mono">
+        <SectionCard title="Worker Designation" noPadding>
+          <div className="p-6 flex flex-col md:flex-row gap-6 md:items-center justify-between bg-gradient-to-r from-[rgba(255,255,255,0.02)] to-transparent">
+            <div className="flex items-center gap-6">
+              <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-[rgba(255,255,255,0.08)] flex items-center justify-center text-2xl font-bold text-gray-200 shadow-glass">
                 {worker.name.charAt(0)}
               </div>
               <div>
-                <div className="flex items-center gap-3 mb-1">
-                  <h2 className="text-lg font-semibold text-white">{worker.name}</h2>
+                <div className="flex items-center gap-3 mb-1.5">
+                  <h2 className="text-xl font-bold text-white">{worker.name}</h2>
                   <StatusBadge status="active" />
                 </div>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-zinc-400 font-mono">
+                <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-400 font-medium">
                   <span className="flex items-center gap-1.5">
-                    <MapPin size={12} className="text-zinc-500" />
+                    <MapPin size={14} className="text-emerald-500/80" />
                     {worker.zones?.name ?? worker.zone_id} · {worker.zones?.city}
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <Activity size={12} className="text-zinc-500" />
+                  <span className="flex items-center gap-1.5 border-l border-[rgba(255,255,255,0.1)] pl-4">
+                    <Activity size={14} className="text-sky-500/80" />
                     {worker.platform}
                   </span>
-                  <span className="text-zinc-600">ID: {worker.id.substring(0, 8)}</span>
+                  <span className="border-l border-[rgba(255,255,255,0.1)] pl-4 font-mono text-xs mt-0.5">
+                    ID: {worker.id.substring(0, 8)}
+                  </span>
                 </div>
               </div>
             </div>
-            <div className="md:border-l border-zinc-800/50 md:pl-6">
-              <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-                <ShieldCheck size={12} className="text-emerald-500" />
+            <div className="md:border-l border-[rgba(255,255,255,0.08)] md:pl-8">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <ShieldCheck size={14} className="text-emerald-400" />
                 Coverage Status
               </p>
               <StatusBadge status={policy ? "active" : "review"} size="md" />
@@ -130,7 +132,7 @@ export default function PolicyPage() {
       )}
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <KeyMetricCard
           label="Weekly Premium"
           value={`₹${premium}`}
@@ -150,7 +152,7 @@ export default function PolicyPage() {
           accent="zinc"
         />
         <KeyMetricCard
-          label="Zone Risk Index"
+          label="Zone Risk"
           value={zri.toFixed(2)}
           unit="× ZRI"
           sub={`${worker?.zones?.name ?? 'Zone'} · ${worker?.zones?.city}`}
@@ -158,62 +160,67 @@ export default function PolicyPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Premium Breakdown */}
         <div className="lg:col-span-8">
           <SectionCard
-            title="Premium Formula Breakdown"
+            title="Premium Formula Analysis"
             badge={quote?.eligibility
-              ? <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-400/20">ELIGIBLE</span>
-              : <span className="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded border border-red-400/20">INELIGIBLE</span>
+              ? <span className="text-xs font-bold tracking-widest bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded border border-emerald-400/20 shadow-glow-emerald">ELIGIBLE</span>
+              : <span className="text-xs font-bold tracking-widest bg-red-500/10 text-red-400 px-3 py-1 rounded border border-red-400/20 shadow-glow-red">INELIGIBLE</span>
             }
             headerRight={
               <button
                 onClick={() => setShowBreakdown(!showBreakdown)}
-                className="text-zinc-500 hover:text-zinc-300 transition-colors"
+                className="btn-secondary text-xs flex items-center gap-2 px-3 py-1.5"
               >
                 {showBreakdown ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                {showBreakdown ? "Hide Details" : "Show Details"}
               </button>
             }
           >
             {showBreakdown && (
-              <div className="space-y-1">
+              <div className="space-y-2 animate-slide-up">
                 {/* Formula explanation */}
-                <div className="mb-4 p-3 bg-zinc-900/50 rounded-md border border-zinc-800/50">
-                  <p className="text-[10px] font-mono text-zinc-500">
+                <div className="mb-6 p-4 bg-[rgba(255,255,255,0.02)] rounded-xl border border-[rgba(255,255,255,0.05)]">
+                  <p className="text-sm font-mono text-gray-400 font-semibold mb-1">
                     Premium = BWE × 5% × ZRI × WI × TE × RA
                   </p>
-                  <p className="text-[10px] text-zinc-600 mt-1">
-                    All factors are deterministic. No ML black-box.
+                  <p className="text-xs text-gray-500">
+                    All factors are fully deterministic. No black-box machine learning.
                   </p>
                 </div>
 
-                {[
-                  { label: "Base Weekly Earnings (BWE)", value: `₹${bwe.toFixed(0)}`, formula: "Median earnings from work history", color: "text-zinc-200" },
-                  { label: "Base Rate", value: "5%", formula: "Fixed parametric baseline", color: "text-zinc-300" },
-                  { label: "Zone Risk Index (ZRI)", value: `${d?.zone_multiplier?.toFixed(4) ?? zri}×`, formula: `${worker?.zones?.name} zone risk factor`, color: "text-amber-400" },
-                  { label: "Work Intensity Factor (WI)", value: `${d?.work_intensity_factor?.toFixed(4) ?? "—"}×`, formula: "BWE / 5000, clamped 0.8–1.5", color: "text-sky-400" },
-                  { label: "Time Exposure Factor (TE)", value: `${d?.time_exposure_factor?.toFixed(4) ?? "—"}×`, formula: "Earnings concentration in risky hours", color: "text-violet-400" },
-                  { label: "Risk Adjustment (RA)", value: `${d?.risk_adjustment?.toFixed(4) ?? "1.0"}×`, formula: "Recent claims anomaly multiplier", color: "text-orange-400" },
-                ].map((row) => (
-                  <div key={row.label} className="flex justify-between items-center py-2.5 border-b border-zinc-800/40 last:border-0">
-                    <div>
-                      <p className="text-[12px] text-zinc-300">{row.label}</p>
-                      <p className="text-[10px] text-zinc-600 mt-0.5 font-mono">{row.formula}</p>
+                <div className="space-y-1">
+                  {[
+                    { label: "Base Weekly Earnings (BWE)", value: `₹${bwe.toFixed(0)}`, formula: "Median earnings from work history", color: "text-white" },
+                    { label: "Base Rate Base", value: "5%", formula: "Fixed parametric baseline", color: "text-gray-300" },
+                    { label: "Zone Risk Index (ZRI)", value: `${d?.zone_multiplier?.toFixed(4) ?? zri}×`, formula: `${worker?.zones?.name ?? 'Assigned'} zone risk factor`, color: "text-amber-400" },
+                    { label: "Work Intensity Factor (WI)", value: `${d?.work_intensity_factor?.toFixed(4) ?? "—"}×`, formula: "BWE / 5000, clamped 0.8–1.5", color: "text-sky-400" },
+                    { label: "Time Exposure Factor (TE)", value: `${d?.time_exposure_factor?.toFixed(4) ?? "—"}×`, formula: "Earnings concentration in risky hours", color: "text-emerald-400" },
+                    { label: "Risk Adjustment (RA)", value: `${d?.risk_adjustment?.toFixed(4) ?? "1.0"}×`, formula: "Recent claims anomaly multiplier", color: "text-orange-400" },
+                  ].map((row) => (
+                    <div key={row.label} className="flex justify-between items-center py-3 border-b border-[rgba(255,255,255,0.04)] last:border-0 hover:bg-[rgba(255,255,255,0.01)] px-2 transition-colors rounded">
+                      <div>
+                        <p className="text-sm font-medium text-gray-300">{row.label}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{row.formula}</p>
+                      </div>
+                      <span className={`text-sm font-mono font-bold ${row.color}`}>{row.value}</span>
                     </div>
-                    <span className={`text-[13px] font-mono font-semibold ${row.color}`}>{row.value}</span>
-                  </div>
-                ))}
+                  ))}
+                </div>
 
-                <div className="pt-3 flex justify-between items-center">
-                  <span className="text-[11px] uppercase tracking-widest text-zinc-500 font-semibold">Final Weekly Premium</span>
-                  <span className="text-2xl font-mono text-white font-bold">₹{premium}</span>
+                <div className="mt-6 pt-5 flex justify-between items-center border-t border-[rgba(255,255,255,0.1)] px-2">
+                  <span className="text-sm uppercase tracking-widest text-gray-400 font-bold">Computed Premium</span>
+                  <span className="text-3xl font-mono text-white font-black">₹{premium}</span>
                 </div>
 
                 {quote?.explanation && (
-                  <p className="mt-3 text-[11px] text-zinc-500 italic leading-relaxed border-t border-zinc-800/40 pt-3">
-                    {quote.explanation}
-                  </p>
+                  <div className="mt-5 p-4 border-l-2 border-emerald-500/50 bg-emerald-500/5">
+                    <p className="text-xs text-gray-400 leading-relaxed font-medium">
+                      {quote.explanation}
+                    </p>
+                  </div>
                 )}
               </div>
             )}
@@ -221,63 +228,65 @@ export default function PolicyPage() {
         </div>
 
         {/* Policy Action */}
-        <div className="lg:col-span-4 space-y-4">
+        <div className="lg:col-span-4 space-y-6">
           {policy ? (
-            <SectionCard title="Active Policy">
-              <div className="space-y-3">
-                <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/40">
-                  <span className="text-[11px] text-zinc-400">Policy ID</span>
-                  <span className="text-[11px] font-mono text-zinc-300">{policy.id.substring(0, 8)}...</span>
+            <SectionCard title="Active Contract Details">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center py-3 border-b border-[rgba(255,255,255,0.04)]">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Contract ID</span>
+                  <span className="text-xs font-mono font-bold text-gray-300">{policy.id.split('-')[0]}...</span>
                 </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/40">
-                  <span className="text-[11px] text-zinc-400">Weekly Premium</span>
-                  <span className="text-[13px] font-mono text-emerald-400">₹{policy.weekly_premium}</span>
+                <div className="flex justify-between items-center py-3 border-b border-[rgba(255,255,255,0.04)]">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Weekly Premium</span>
+                  <span className="text-sm font-mono font-bold text-emerald-400">₹{policy.weekly_premium}</span>
                 </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/40">
-                  <span className="text-[11px] text-zinc-400">Coverage Limit</span>
-                  <span className="text-[13px] font-mono text-sky-400">₹{policy.coverage_limit}</span>
+                <div className="flex justify-between items-center py-3 border-b border-[rgba(255,255,255,0.04)]">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Coverage Limit</span>
+                  <span className="text-sm font-mono font-bold text-sky-400">₹{policy.coverage_limit}</span>
                 </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/40">
-                  <span className="text-[11px] text-zinc-400">BWE (Base)</span>
-                  <span className="text-[13px] font-mono text-zinc-200">₹{policy.bwe}</span>
+                <div className="flex justify-between items-center py-3 border-b border-[rgba(255,255,255,0.04)]">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Run-Rate Base</span>
+                  <span className="text-sm font-mono font-bold text-gray-200">₹{policy.bwe}</span>
                 </div>
-                <div className="flex justify-between items-center py-1.5">
-                  <span className="text-[11px] text-zinc-400">Status</span>
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Status</span>
                   <StatusBadge status={policy.status === "active" ? "active" : "review"} />
                 </div>
               </div>
             </SectionCard>
           ) : (
             <SectionCard title="Activate Coverage">
-              <div className="text-center py-4 space-y-4">
+              <div className="text-center py-6 space-y-6">
                 {activated ? (
-                  <div className="text-center">
-                    <CheckCircle2 size={32} className="text-emerald-400 mx-auto mb-3" />
-                    <p className="text-[13px] font-medium text-zinc-200">Policy Activated!</p>
-                    <p className="text-[11px] text-zinc-500 mt-1">Your coverage is now active.</p>
+                  <div className="card border-emerald-500/20 bg-emerald-500/5 shadow-glow-emerald p-6 animate-scale-in">
+                    <CheckCircle2 size={40} className="text-emerald-400 mx-auto mb-4" />
+                    <p className="text-lg font-bold text-white">Policy Activated</p>
+                    <p className="text-sm text-gray-400 mt-2 font-medium">Your parametric coverage is now live.</p>
                   </div>
                 ) : (
                   <>
-                    <p className="text-[12px] text-zinc-400 leading-relaxed">
-                      No active policy found. Generate a quote and activate coverage.
+                    <p className="text-sm text-gray-400 leading-relaxed max-w-[250px] mx-auto">
+                      No active policy detected. Lock in your weekly premium to activate automatic coverage.
                     </p>
                     {quote?.eligibility && (
-                      <div className="card p-3 text-left">
-                        <p className="text-[10px] text-zinc-500 mb-1">Computed Premium</p>
-                        <p className="text-2xl font-mono text-white">₹{premium}</p>
-                        <p className="text-[10px] text-zinc-600 mt-1">/ week</p>
+                      <div className="card p-5 text-left border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)]">
+                        <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-widest">Premium Output</p>
+                        <div className="flex items-baseline gap-1.5">
+                          <p className="text-4xl font-black font-mono text-white">₹{premium}</p>
+                          <p className="text-xs font-bold text-gray-600">/ week</p>
+                        </div>
                       </div>
                     )}
                     <button
                       onClick={handleActivate}
                       disabled={activating || !quote?.eligibility}
-                      className="w-full btn-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full btn-primary py-3.5 text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-glow"
                     >
-                      {activating ? <RefreshCw size={14} className="animate-spin" /> : <Play size={14} />}
-                      {activating ? "Activating..." : "Activate Policy"}
+                      {activating ? <RefreshCw size={18} className="animate-spin" /> : <Play size={18} className="fill-[#09090b]" />}
+                      {activating ? "Initializing Contract..." : "Confirm & Activate"}
                     </button>
                     {!quote?.eligibility && (
-                      <p className="text-[10px] text-red-400/80">{quote?.explanation ?? "Not eligible for coverage"}</p>
+                      <p className="text-xs text-red-400/90 font-medium px-4">{quote?.explanation ?? "Requirements not met for coverage."}</p>
                     )}
                   </>
                 )}
@@ -286,20 +295,26 @@ export default function PolicyPage() {
           )}
 
           {/* Eligibility note */}
-          <div className="card p-4 border-zinc-800/50">
-            <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-2">Eligibility Rules</p>
-            <div className="space-y-2 text-[11px] text-zinc-500">
-              <div className="flex items-start gap-2">
-                <span className={`mt-0.5 w-3 h-3 rounded-full flex-shrink-0 ${(worker?.id ? true : false) ? "bg-emerald-500/60" : "bg-zinc-700"}`} />
-                Min. 8 weeks work history
+          <div className="card p-5 border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.01)]">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">Underwriting Rules</p>
+            <div className="space-y-4 text-sm font-medium text-gray-400">
+              <div className="flex items-start gap-3">
+                <div className={`mt-0.5 w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${(worker?.id ? true : false) ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 shadow-glow-emerald" : "bg-gray-800 border border-gray-700"}`}>
+                  {(worker?.id ? true : false) && <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>}
+                </div>
+                Min. 8 weeks history
               </div>
-              <div className="flex items-start gap-2">
-                <span className={`mt-0.5 w-3 h-3 rounded-full flex-shrink-0 ${bwe >= 1500 ? "bg-emerald-500/60" : "bg-zinc-700"}`} />
-                Median earnings ≥ ₹1,500/day
+              <div className="flex items-start gap-3">
+                <div className={`mt-0.5 w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${bwe >= 1500 ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 shadow-glow-emerald" : "bg-gray-800 border border-gray-700"}`}>
+                  {bwe >= 1500 && <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>}
+                </div>
+                Earnings ≥ ₹1,500/week
               </div>
-              <div className="flex items-start gap-2">
-                <span className="mt-0.5 w-3 h-3 rounded-full flex-shrink-0 bg-emerald-500/60" />
-                Active in verified zone
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 w-4 h-4 rounded-full flex flex-shrink-0 items-center justify-center bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 shadow-glow-emerald">
+                  <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+                </div>
+                Active in tracked zone
               </div>
             </div>
           </div>

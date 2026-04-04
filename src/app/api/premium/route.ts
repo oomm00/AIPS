@@ -82,9 +82,10 @@ export async function GET(request: Request): Promise<NextResponse> {
       );
     }
 
-    // Load worker + zone + work history in parallel
+    // Load worker + work history in parallel.
+    // Zone is loaded separately to avoid relying on implicit DB relations.
     const [wRes, hRes] = await Promise.all([
-      supabaseServer.from('workers').select('*, zones(*)').eq('id', workerId).single(),
+      supabaseServer.from('workers').select('id, zone_id').eq('id', workerId).single(),
       supabaseServer
         .from('work_history')
         .select('*')
@@ -92,16 +93,45 @@ export async function GET(request: Request): Promise<NextResponse> {
         .order('date', { ascending: false }),
     ]);
 
-    if (wRes.error || !wRes.data) {
+    if (wRes.error) {
+      return NextResponse.json(
+        { success: false, error: `Failed to load worker: ${wRes.error.message}` },
+        { status: 500 }
+      );
+    }
+
+    if (!wRes.data) {
       return NextResponse.json(
         { success: false, error: 'Worker not found' },
         { status: 404 }
       );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const zone = (wRes.data as any).zones;
-    const zri: number = zone?.zri ?? 1.0;
+    if (hRes.error) {
+      return NextResponse.json(
+        { success: false, error: `Failed to load work history: ${hRes.error.message}` },
+        { status: 500 }
+      );
+    }
+
+    let zri = 1.0;
+    const zoneId = (wRes.data as { zone_id?: string | null }).zone_id;
+    if (zoneId) {
+      const { data: zoneData, error: zoneError } = await supabaseServer
+        .from('zones')
+        .select('zri, risk_index')
+        .eq('id', zoneId)
+        .maybeSingle();
+
+      if (!zoneError && zoneData) {
+        // Supports both schema variants: zones.zri and zones.risk_index
+        const value = (zoneData as { zri?: number; risk_index?: number }).zri
+          ?? (zoneData as { zri?: number; risk_index?: number }).risk_index
+          ?? 1.0;
+        zri = Number(value);
+      }
+    }
+
     const history = hRes.data ?? [];
 
     const result: PremiumOutput = runPremiumEngine({

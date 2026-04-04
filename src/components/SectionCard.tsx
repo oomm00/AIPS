@@ -1,6 +1,8 @@
 "use client";
 
 import { ReactNode } from "react";
+import Card from "@/components/Card";
+import SectionHeader from "@/components/SectionHeader";
 
 interface SectionCardProps {
   title: string;
@@ -22,31 +24,18 @@ export default function SectionCard({
   noPadding = false,
 }: SectionCardProps) {
   return (
-    <div className={`card overflow-hidden ${className}`}>
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3 px-5 pt-4 pb-3">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-[13px] font-semibold text-zinc-200 tracking-tight">
-                {title}
-              </h3>
-              {badge}
-            </div>
-            {subtitle && (
-              <p className="text-[10px] text-zinc-600 mt-0.5">{subtitle}</p>
-            )}
-          </div>
-        </div>
-        {headerRight && (
-          <div className="flex-shrink-0">{headerRight}</div>
-        )}
+    <Card className={`overflow-hidden ${className}`}>
+      <div className="border-b border-white/5 px-6 pb-4 pt-6">
+        <SectionHeader
+          title={title}
+          subtitle={subtitle}
+          badge={badge}
+          action={headerRight}
+          size="md"
+          className="items-center"
+        />
       </div>
-
-      {/* Content */}
-      <div className={noPadding ? "" : "px-5 pb-4"}>
-        {children}
-      </div>
-    </div>
+      <div className={noPadding ? "" : "p-6"}>{children}</div>
+    </Card>
   );
 }
