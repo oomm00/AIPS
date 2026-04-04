@@ -29,6 +29,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+build_output.txt
+errors.txt
+ts_error.txt
+ts_errors_new.txt
 
 # env files
 .env
