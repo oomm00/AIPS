@@ -85,7 +85,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     // Load worker + work history in parallel.
     // Zone is loaded separately to avoid relying on implicit DB relations.
     const [wRes, hRes] = await Promise.all([
-      supabaseServer.from('workers').select('id, zone_id').eq('id', workerId).single(),
+      supabaseServer.from('workers').select('id, zone_id').eq('id', workerId).maybeSingle(),
       supabaseServer
         .from('work_history')
         .select('*')
@@ -119,15 +119,12 @@ export async function GET(request: Request): Promise<NextResponse> {
     if (zoneId) {
       const { data: zoneData, error: zoneError } = await supabaseServer
         .from('zones')
-        .select('zri, risk_index')
+        .select('zri')
         .eq('id', zoneId)
         .maybeSingle();
 
       if (!zoneError && zoneData) {
-        // Supports both schema variants: zones.zri and zones.risk_index
-        const value = (zoneData as { zri?: number; risk_index?: number }).zri
-          ?? (zoneData as { zri?: number; risk_index?: number }).risk_index
-          ?? 1.0;
+        const value = (zoneData as { zri?: number }).zri ?? 1.0;
         zri = Number(value);
       }
     }
